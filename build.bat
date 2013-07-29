@@ -1,0 +1,1 @@
+g++ compiler/src/px/LabelGenerator.cpp compiler/src/px/Token.cpp compiler/src/px/Symbol.cpp compiler/src/px/SymbolsTable.cpp compiler/src/px/StaticTables.cpp compiler/src/px/Validators.cpp compiler/src/px/LexicalAnalyzer.cpp compiler/src/EntryPoint.cpp -o pixel -lboost_regex -std=c++0x
