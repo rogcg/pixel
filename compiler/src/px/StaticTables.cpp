@@ -8,22 +8,22 @@
 #include <sstream>
     
 // Initialize the reservated words
-std::vector<std::string> ST::StaticTables::initializeReservatedWords()
+std::vector<std::string> ST::StaticTables::initializeReservedWords()
 {
-	//std::cout<< "Initializing reservated words.." << std::endl;
+	//std::cout<< "Initializing reserved words.." << std::endl;
 
-	reservatedWords.push_back("def");
-	reservatedWords.push_back("main");
-	reservatedWords.push_back("int");
-	reservatedWords.push_back("str");
-	reservatedWords.push_back("real");
-	reservatedWords.push_back("ret");
-	reservatedWords.push_back("if");
-	reservatedWords.push_back("while");
-	reservatedWords.push_back("read");
-	reservatedWords.push_back("print");
+	reservedWords.push_back("def");
+	reservedWords.push_back("main");
+	reservedWords.push_back("int");
+	reservedWords.push_back("str");
+	reservedWords.push_back("real");
+	reservedWords.push_back("ret");
+	reservedWords.push_back("if");
+	reservedWords.push_back("while");
+	reservedWords.push_back("read");
+	reservedWords.push_back("print");
 
-	return reservatedWords;
+	return reservedWords;
 }
 
 // Initialize the delimiters
@@ -60,11 +60,11 @@ std::vector<std::string> ST::StaticTables::initializeOperators()
 }
 
 // Check if the image received as parameters is a reservated word
-bool ST::StaticTables::isReservatedWord(std::string image)
+bool ST::StaticTables::isReservedWord(std::string image)
 {
-	reservatedWords = initializeReservatedWords();
+	reservedWords = initializeReservedWords();
 
-	if(std::find(reservatedWords.begin(), reservatedWords.end(), image) != reservatedWords.end())
+	if(std::find(reservedWords.begin(), reservedWords.end(), image) != reservedWords.end())
 	{
 		//std::cout << "found!" << std::endl;
 		return true;

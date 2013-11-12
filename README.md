@@ -7,7 +7,7 @@ i'm reimplementing the compiler from java to c++. if you want to get the last
 version of it (which is written in java) get it [here](http://github.com/rogcg/pixellang). 
 
 remember that i'm rewriting the project to c++ based on the java implementation, so please,
-if you are going to contribute, base on the java code. as soon as the c++ version is stable, 
+if you are going to contribute, base on the [java code](http://github.com/rogcg/pixellang). as soon as the c++ version is stable, 
 the java version will be deleted.
 
 check the website.

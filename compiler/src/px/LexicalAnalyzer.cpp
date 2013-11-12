@@ -99,12 +99,12 @@ void LA::LexicalAnalyzer::analyze()
 
 void LA::LexicalAnalyzer::processImage(std::string image, int lineNumber)
 {
-    if(staticTables.isReservatedWord(image))
+    if(staticTables.isReservedWord(image))
     {
         TK::Token token(image, "RW", -1, lineNumber, 0);
         tokens.push_back(token);
         symbolsTable.addToken(token);
-        //std::cout << "isReservatedWord" << std::endl;
+        //std::cout << "isReservedWord" << std::endl;
     }
     else if(staticTables.isDelimiter(image))
     {
@@ -308,7 +308,7 @@ std::vector<std::string> LA::LexicalAnalyzer::processImage(std::string image)
             j++;
         }
         // check if the token is a reservated word
-        else if(staticTables.isReservatedWord(charact))
+        else if(staticTables.isReservedWord(charact))
         {
             if(alphaNumeric != "")
             {
