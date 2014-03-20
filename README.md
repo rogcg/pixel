@@ -18,9 +18,12 @@ and
 
 [pixel language on google+](https://plus.google.com/b/100494143910868751778/100494143910868751778/posts)
 
-thanks.
 
-Running the compiler
+implementation requirements
+=====
+the main requirement for pixel now is rewrite the entire compiler from **java** to **c++**. so if you want to contribute just clone this repository and base your implementation based on the [stable code written in java](https://github.com/rogcg/pixellang/blob/master/Pixel%20Grammar/Pixel%20Grammar.txt).
+
+running the compiler
 =====
 
 to run the compiler, download the source code and build the application by running the `build.bat` file or just run the command on your terminal in the root directory of *pixel/*.
