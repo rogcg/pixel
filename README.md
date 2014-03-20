@@ -21,7 +21,7 @@ and
 
 implementation requirements
 =====
-the main requirement for pixel now is rewrite the entire compiler from **java** to **c++**. so if you want to contribute just clone this repository and base your implementation based on the [stable code written in java](https://github.com/rogcg/pixellang/blob/master/Pixel%20Grammar/Pixel%20Grammar.txt).
+the main requirement for pixel now is rewrite the entire compiler from **java** to **c++**. so if you want to contribute just clone this repository and base your implementation based on the [stable code written in java](https://github.com/rogcg/pixellang).
 
 running the compiler
 =====
