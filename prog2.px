@@ -21,3 +21,4 @@ def main []
     read a1
     read a2
     print "final test"
+    

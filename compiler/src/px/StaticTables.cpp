@@ -19,6 +19,7 @@ std::vector<std::string> ST::StaticTables::initializeReservedWords()
 	reservedWords.push_back("real");
 	reservedWords.push_back("ret");
 	reservedWords.push_back("if");
+	reservedWords.push_back("else");
 	reservedWords.push_back("while");
 	reservedWords.push_back("read");
 	reservedWords.push_back("print");

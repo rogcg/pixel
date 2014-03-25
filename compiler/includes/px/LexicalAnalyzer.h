@@ -23,6 +23,8 @@ namespace LA
 	        std::vector<std::string> errors;
 	        ST::StaticTables staticTables;
     		SYT::SymbolsTable symbolsTable;
+    		// an array that contains the position of the initial and the final double quote
+    		// of an string element in a statement
     		std::array<int, 2> quotePositions{{-1,-1}};
 		    
 		    LexicalAnalyzer(std::ifstream&);

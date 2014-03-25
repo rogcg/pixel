@@ -24,7 +24,7 @@ bool VLD::Validators::isAlphaNumeric(std::string image)
 // check the image is a string
 bool VLD::Validators::isStr(std::string image)
 {
-	std::cout << "is str: " << image << std::endl;
+	//std::cout << "is str: " << image << std::endl;
 
 	if(boost::regex_match(image, boost::regex("\"[0-9a-zA-z.\" ]*")))
 		return true;

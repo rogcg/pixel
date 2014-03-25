@@ -8,10 +8,10 @@
 #include "../includes/px/LexicalAnalyzer.h"
 #include "../includes/px/StaticTables.h"
 
-int main()
+int main(int argc, char* argv[])
 {
     std::ifstream indata;
-    std::string filename = "prog2.px";
+    std::string filename = argv[1];
 
     // Reads the source .px file
     indata.open(filename.c_str());
