@@ -15,6 +15,7 @@ int main(int argc, char* argv[])
 
     // Reads the source .px file
     indata.open(filename.c_str());
+
     if(!indata)
     {
         std::cerr << "Error: file could not be opened." << std::endl;
@@ -25,6 +26,7 @@ int main(int argc, char* argv[])
 
     SYT::SymbolsTable symbolsTable;
     LA::LexicalAnalyzer lexicalAnalyzer(indata);
+    std::cout << "Performing lexical analysis.\n" << std::endl;
     lexicalAnalyzer.analyze();
 
     // Checks if some error happened on the lexical analysis
@@ -33,18 +35,14 @@ int main(int argc, char* argv[])
         lexicalAnalyzer.showErrors();
         exit(1);
     }
-    std::cout << "Lexical Analysis successfully performed! \n\n -> Tokens List" << std::endl;
-    lexicalAnalyzer.showTokens(); // Show the list of tokens generated on the lexical analysis
-
-    std::cout << "size: " << SYT::SymbolsTable::s_symbols.size() << std::endl;
+    std::cout << "Lexical analysis successfully performed! \n======================== \n\n" << std::endl;
+    //lexicalAnalyzer.showTokens(); // Show the list of tokens generated on the lexical analysis
 
     symbolsTable.showSymbolsTable();
 
-    system("pause");
-
     #endif // LEXICAL_ANALYSIS
-
- /* #ifndef SYMBOLS_TABLE
+/*
+  #ifndef SYMBOLS_TABLE
 
     SymbolsTable::showSymbolsTable();
     std::cout << "\n\nLSC\n" << std::endl;

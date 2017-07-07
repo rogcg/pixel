@@ -26,12 +26,12 @@ namespace LA
     		// an array that contains the position of the initial and the final double quote
     		// of an string element in a statement
     		std::array<int, 2> quotePositions{{-1,-1}};
-		    
+
 		    LexicalAnalyzer(std::ifstream&);
 		    void analyze();
 		    bool hasError();
 		    std::vector<std::string> processImage(std::string image);
-		    void processString(std::string currentLine);
+		    void processString(std::string currentLine, int LineNumber);
 		    void processImage(std::string image, int lineNumber);
 		    void showErrors();
 		    static void printError(std::string error);
@@ -42,4 +42,3 @@ namespace LA
 }
 
 #endif // LEXICAL_ANALYZER_CPP_H
-

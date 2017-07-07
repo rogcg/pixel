@@ -1,25 +1,22 @@
-( def main [ ]
+def main []
+    int a a2 a3
+    str s1 s2
+    = a1 10
+    = a2 a1
+    = a1 (- a2 10)
+    real r1 r2 r3
+    = r1 (+ (- r3 r2) r3)
 
-	( int a1 a2 )
-	( real r2 r4 r3 )
-	( str s1 s2 name ) 
-	( = a1 20 )
-	( = r2 ( + r3 45.5 ) )
+    if > a1 a2
+        = a3 2
+    else
+        = a3 29
+        = a2 10
 
-	( if ( > r4 12.2 ) 
-		(
-			( = a1 2 )
-			( = r3 34.2 )
-		)
-		( = a1 3 )
-	)
+    while <= a3 100
+        = a3 (+ a3 2)
+        = a1 100
 
-	( while ( < 23.2 r4 ) 
-		( = a1 2 )
-		( = r3 34.8 )	
-	)
-
-	( read a2 )
-
-	( print "Test" )
-)
+    read a1
+    read a2
+    print "final test string test"

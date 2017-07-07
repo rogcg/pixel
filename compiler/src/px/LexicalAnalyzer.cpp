@@ -39,28 +39,25 @@ void LA::LexicalAnalyzer::analyze()
         {
             lineNumber++;
 
-            //std::cout << "current line: " << currentLine << std::endl;
-
             if(currentLine.find('\"') != std::string::npos)
-            {                                
-                processString(currentLine);        
+            {
+                processString(currentLine, lineNumber);
             }
             else
             {
-                std::istringstream iss(currentLine);                
+                std::istringstream iss(currentLine);
 
                 std::string image;
                 while (iss >> image)
-                {                
-                    //std::cout << "image: " << image << std::endl;
+                {
                     processImage(image, lineNumber);
                 }
 
                 tokens.push_back(TK::Token("$", "EOF", -1, -1, -1));
             }
-        }        
+        }
     }
-    catch (boost::regex_error& e) 
+    catch (boost::regex_error& e)
     {
         std::cerr << "code " << e.code() << std::endl;
         if (e.code() == boost::regex_constants::error_collate)
@@ -88,11 +85,13 @@ void LA::LexicalAnalyzer::analyze()
         else if (e.code() == boost::regex_constants::error_complexity)
             std::cerr << "The complexity of an attempted match against a regular expression exceeded a pre-set level..\n";
         else std::cerr << "Some other regex exception happened.\n";
-    }    
+    } catch(int e) {
+        std::cerr << "Some other exception happened." << e << "\n";
+    }
 }
 
-// This is the main lexical processor. This method reads each token to know which symbol 
-// it belongs to. In case a token is not recognized in one of its conditions, it will be 
+// This is the main lexical processor. This method reads each token to know which symbol
+// it belongs to. In case a token is not recognized in one of its conditions, it will be
 // sent to a second processor, that will process the image deeply and return it again
 // to this method.
 
@@ -102,59 +101,51 @@ void LA::LexicalAnalyzer::processImage(std::string image, int lineNumber)
     {
         TK::Token token(image, "RW", -1, lineNumber, 0);
         tokens.push_back(token);
-        symbolsTable.addToken(token);
-        std::cout << "isReservedWord (" << image << ")" << std::endl;
+        symbolsTable.addToken(token, "RW");
     }
     else if(staticTables.isDelimiter(image))
     {
         TK::Token token(image, "DE", -1, lineNumber, 0);
         tokens.push_back(token);
-        symbolsTable.addToken(token);
-        std::cout << "isDelimiter (" << image << ")" << std::endl;
+        symbolsTable.addToken(token, "DE");
     }
     // check the identifiers
     else if(VLD::Validators::isAlphaNumeric(image))
     {
         TK::Token token(image, "ID", -1, lineNumber, 0);
         tokens.push_back(token);
-        symbolsTable.addToken(token);
-        std::cout << "isAlphaNumeric (" << image << ")" << std::endl;
+        symbolsTable.addToken(token, "ID");
     }
     // check if the image is a 'str' type
     else if(VLD::Validators::isStr(image))
     {
         TK::Token token(image, "LSC", -1, lineNumber, 0);
         tokens.push_back(token);
-        symbolsTable.addToken(token);
-        symbolsTable.addLiteralStringToken(token);
-        std::cout << "isNumericAlpha (" << image << ")" << std::endl;
+        symbolsTable.addToken(token, "LSC");
+        symbolsTable.addLiteralStringToken(token, "LSC");
     }
     // check if the image is a 'real' type
     else if(VLD::Validators::isReal(image))
     {
         TK::Token token(image, "RLC", -1, lineNumber, 0);
         tokens.push_back(token);
-        symbolsTable.addToken(token);
-        std::cout << "isReal (" << image << ")" << std::endl;
+        symbolsTable.addToken(token, "RLC");
     }
     // check if the image is an 'int' type
     else if(VLD::Validators::isInt(image))
     {
         TK::Token token(image, "ILC", -1, lineNumber, 0);
         tokens.push_back(token);
-        symbolsTable.addToken(token);
-        std::cout << "isInt (" << image << ")" << std::endl;
+        symbolsTable.addToken(token, "ILC");
     }
     else if(staticTables.isOperator(image))
     {
         TK::Token token(image, "OP", -1, lineNumber, 0);
         tokens.push_back(token);
-        symbolsTable.addToken(token);
-        std::cout << "isOperator (" << image << ")" << std::endl;
+        symbolsTable.addToken(token, "OP");
     }
     else // in case the image has not been recognized for any of the above validations
     {
-        std::cout << "ENTROU AQUI!! (" << image << ")" << std::endl;
 
         if(image.length() > 1) // checks if the image is not empty
         {
@@ -163,38 +154,38 @@ void LA::LexicalAnalyzer::processImage(std::string image, int lineNumber)
             std::vector<std::string> tokens_vector = processImage(image);
 
             // fetch the symbols inside the vector
-            for(std::vector<int>::size_type i = 0; i < tokens_vector.size(); i++) 
+            for(std::vector<int>::size_type i = 0; i < tokens_vector.size(); i++)
             {
-                std::string str = ""; 
-                str += tokens_vector[i];                
+                std::string str = "";
+                str += tokens_vector[i];
 
-                // each symbol will be send again to the main lexical processor to be 
+                // each symbol will be send again to the main lexical processor to be
                 // recognized again
                 processImage(str, lineNumber);
-            }            
+            }
         }
         else
         {
             std::stringstream errorMessage;
-            errorMessage << "\nLexical Error: unknown symbol: " << image << ", line: " << lineNumber << "";
+            errorMessage << "\nLexical Error: unknown symbol: " << image << ", line: " << lineNumber << "\n";
             errors.push_back(errorMessage.str());
         }
     }
 }
 
 
-// This method processes the image which have not been recognized in the main lexical 
+// This method processes the image which have not been recognized in the main lexical
 // processor.
 //
-// E.g.: in case the image is something like '10)' (without the ''). The method must 
+// E.g.: in case the image is something like '10)' (without the ''). The method must
 // recognize the number '10' and the delimiter ')' as two different tokens.
-// 
-// This method will then, generate a vector<std::string> with these tokens, and send it 
+//
+// This method will then, generate a vector<std::string> with these tokens, and send it
 // to the parent caller, which will send this tokens again to the main lexical processor,
 // so this tokens will enter the symbols table.
 
 std::vector<std::string> LA::LexicalAnalyzer::processImage(std::string image)
-{    
+{
     ST::StaticTables staticTables;
 
     std::string newDelimiter = ""; // new delimiter for images with more than a char
@@ -203,9 +194,12 @@ std::vector<std::string> LA::LexicalAnalyzer::processImage(std::string image)
     std::vector<std::string> tokens_vector;
     std::string numeric = "";
     std::string alphaNumeric = "";
+    std::string text = "";
 
     int j = 0;
     std::vector<std::string>::iterator position;
+
+    //std::cout << image << std::endl;
 
     for(int i = 0; i < image.length(); i++)
     {
@@ -214,11 +208,11 @@ std::vector<std::string> LA::LexicalAnalyzer::processImage(std::string image)
 
         nextChar = image[i+1]; // used to store the next character when dealing
                                // with the processing of an identifier name which
-                               // is concatenated with another symbol that is not 
+                               // is concatenated with another symbol that is not
                                // an alphaNumeric or int. e.g: r3). that's why we
-                               // we get the next char. in case we are processing 
+                               // we get the next char. in case we are processing
                                // the letter 'r', we check if the next is numeric
-                               // or alphaNumeric, so we may contatenate it with 
+                               // or alphaNumeric, so we may contatenate it with
                                // the current letter 'r', so we will get 'r3'.
 
         if(charact == " ")
@@ -235,7 +229,7 @@ std::vector<std::string> LA::LexicalAnalyzer::processImage(std::string image)
                 j++;
                 alphaNumeric = "";
             }
-                
+
             numeric += charact;
         }
         // check if the token is alpha numeric (often identifiers)
@@ -247,14 +241,14 @@ std::vector<std::string> LA::LexicalAnalyzer::processImage(std::string image)
                 j++;
                 numeric = "";
             }
-            
-            // used to store the next character when dealing with the processing 
-            // of an identifier name which is concatenated with another symbol 
+
+            // used to store the next character when dealing with the processing
+            // of an identifier name which is concatenated with another symbol
             // that is not an alphaNumeric or int. e.g: r3). that's why we
-            // we get the next char. in case we are processing the letter 'r', 
-            // we check if the next is numeric or alphaNumeric, so we may 
+            // we get the next char. in case we are processing the letter 'r',
+            // we check if the next is numeric or alphaNumeric, so we may
             // contatenate it with the current letter 'r', so we will get 'r3'.
-            if(nextChar != "" && (VLD::Validators::isInt(nextChar) 
+            if(nextChar != "" && (VLD::Validators::isInt(nextChar)
                 || VLD::Validators::isAlphaNumeric(nextChar)))
             {
                 charact += nextChar;
@@ -272,15 +266,15 @@ std::vector<std::string> LA::LexicalAnalyzer::processImage(std::string image)
                 j++;
                 alphaNumeric = "";
             }
-                
+
             if(numeric != "")
             {
                 tokens_vector.insert(position, numeric);
                 j++;
                 numeric = "";
             }
-    
-            tokens_vector.insert(position, charact);  
+
+            tokens_vector.insert(position, charact);
             j++;
         }
         // check if the token is a delimiter
@@ -292,7 +286,7 @@ std::vector<std::string> LA::LexicalAnalyzer::processImage(std::string image)
                 j++;
                 alphaNumeric = "";
             }
-                
+
             if(numeric != "")
             {
                 tokens_vector.insert(position, numeric);
@@ -312,7 +306,7 @@ std::vector<std::string> LA::LexicalAnalyzer::processImage(std::string image)
                 j++;
                 alphaNumeric = "";
             }
-                
+
             if(numeric != "")
             {
                 tokens_vector.insert(position, numeric);
@@ -325,14 +319,14 @@ std::vector<std::string> LA::LexicalAnalyzer::processImage(std::string image)
 
         charact = "";
     }
-    
+
     return tokens_vector;
 }
 
 // this method processes a string in the .px code. E.g: print "final test",
 // by removing some reserved word contained in the statement, and also retrieving
 // the string element from the statement.
-void LA::LexicalAnalyzer::processString(std::string currentLine)
+void LA::LexicalAnalyzer::processString(std::string currentLine, int lineNumber)
 {
     std::vector<std::string> text;
     std::vector<std::string> newTokens;
@@ -340,13 +334,9 @@ void LA::LexicalAnalyzer::processString(std::string currentLine)
 
     try
     {
-        //std::cout << "current line" << currentLine << std::endl;
-
-        // receives the whole to be processed
+        // receives the whole line to be processed
         for(int i = 0; i < currentLine.length(); i++)
         {
-            //std::cout << "substring: " << currentLine.substr(10, 17) << std::endl;
-
             // check if in the current position the character is a double quote, which means it's
             // the beginning of the string element in the statement.
             if(currentLine.at(i) == '"')
@@ -355,12 +345,12 @@ void LA::LexicalAnalyzer::processString(std::string currentLine)
 
                 if(quotePositions.at(0) == -1)
                 {
-                    quotePositions.at(0) = i; 
+                    quotePositions.at(0) = i;
                     //std::cout << ">> first if " << quotePositions.at(0) << std::endl;
                 }
                 else if(quotePositions.at(1) == -1)
                 {
-                    quotePositions.at(1) = i; 
+                    quotePositions.at(1) = i;
                     //xstd::cout << ">> sec if " << quotePositions.at(1) << std::endl;
                 }
             }
@@ -371,44 +361,36 @@ void LA::LexicalAnalyzer::processString(std::string currentLine)
             }
         }
 
-        //std::cout << "positions 1: " << quotePositions.at(0) << " " << currentLine.at(quotePositions.at(0)) << std::endl;
-        //std::cout << "positions 2: " << quotePositions.at(1) << " " << currentLine.at(quotePositions.at(1)) << std::endl;
-
         // extract the text from the line based on the quotes position and add to the text vector on a specific position
         // based on the position iterator.
         text.insert(position, currentLine.substr(quotePositions.at(0), quotePositions.at(1)));
-
         // removes the string element from the statement, leaving only the other elements in the statement.
-        currentLine.replace(quotePositions.at(0), quotePositions.at(1), "");    
+        currentLine.replace(quotePositions.at(0), quotePositions.at(1), "");
 
         std::istringstream iss(currentLine);
 
-        //std::cout << "currline: " << currentLine << std::endl;
+        position = newTokens.begin();
 
         // here we get the rest of the elements in the statement, already with the string element removed from it,
         // and we add each one of them to the newTokens vector.
         std::string image;
         while (iss >> image)
         {
-            //std::cout << "image: " << image << std::endl;            
-            newTokens.insert(position, image);
-            position += 1;
+            position = newTokens.insert(position, image);
         }
 
-        // here we get the string elements retrieved before into the text array, and we fetch it, and add each of 
+        // here we get the string elements retrieved before into the text array, and we fetch it, and add each of
         // these elements to the newTokens vector.
         for(int i = 0; i < text.size(); i++)
-        {            
-            //std::cout << "image: " << text.at(i) << std::endl;            
-            newTokens.insert(position, text.at(i));            
+        {
+            position = newTokens.insert(position, text.at(i));
         }
 
         // after this previous operations, we have a newTokens vector, with the tokens and the string elements retrieved
         // from the statement, ready to be processed as a normal Image object.
         for(int i = 0; i < newTokens.size(); i++)
         {
-            std::cout << "image: " << newTokens.at(i) << std::endl;            
-            processImage(newTokens.at(i));
+            processImage(newTokens.at(i), lineNumber);
         }
     }
     catch(std::exception e)
@@ -426,7 +408,6 @@ bool LA::LexicalAnalyzer::hasError()
 // Fetch the errors vector with an iterator.
 void LA::LexicalAnalyzer::showErrors()
 {
-    std::cout << "errors" << std::endl;
     std::for_each(errors.begin(), errors.end(), LA::LexicalAnalyzer::printError);
 }
 
@@ -439,7 +420,6 @@ void LA::LexicalAnalyzer::printError(std::string error)
 // Fetch the errors vector with an iterator.
 void LA::LexicalAnalyzer::showTokens()
 {
-    std::cout << "tokens" << std::endl;
     std::for_each(tokens.begin(), tokens.end(), LA::LexicalAnalyzer::printToken);
 }
 
@@ -448,7 +428,3 @@ void LA::LexicalAnalyzer::printToken(TK::Token token)
 {
     std::cout << "" << token.image << std::endl;
 }
-
-
-
-

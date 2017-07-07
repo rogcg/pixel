@@ -13,29 +13,28 @@
 std::vector<SY::Symbol> SYT::SymbolsTable::s_symbols;
 std::vector<SY::Symbol> SYT::SymbolsTable::s_literalStrings;
 
-void SYT::SymbolsTable::addToken(TK::Token token)
+void SYT::SymbolsTable::addToken(TK::Token token, std::string type)
 {
-	int index = getSymbolIndex(token); 
+	int index = getSymbolIndex(token);
 
 	if(index == -1)
 	{
-		SY::Symbol symb(token, "");
+		SY::Symbol symb(token, type);
 		SYT::SymbolsTable::s_symbols.push_back(symb);
-		token.setIndex(indexOf(SYT::SymbolsTable::s_symbols, symb)); 
+		token.setIndex(indexOf(SYT::SymbolsTable::s_symbols, symb));
 	}
 	else
 	{
 		token.setIndex(index);
-	}		
+	}
 }
 
-void SYT::SymbolsTable::addLiteralStringToken(TK::Token token)
+void SYT::SymbolsTable::addLiteralStringToken(TK::Token token, std::string type)
 {
-	SY::Symbol symb(token, "");
+	SY::Symbol symb(token, type);
 
 	LG::LabelGenerator lg; // Creates a new instance of LabelGenerator class
-	symb.setNick(lg.getNextTemp()); 
-
+	symb.setNick(lg.getNextTemp());
 	SYT::SymbolsTable::s_literalStrings.push_back(symb);
 	token.setIndex(indexOf(SYT::SymbolsTable::s_literalStrings, symb));
 }
@@ -84,7 +83,7 @@ std::string SYT::SymbolsTable::getTokenImage(TK::Token token)
 
 int SYT::SymbolsTable::getSymbolIndex(TK::Token token)
 {
-	for(int i = 0; i < SYT::SymbolsTable::s_symbols.size(); i++) 
+	for(int i = 0; i < SYT::SymbolsTable::s_symbols.size(); i++)
 	{
 		if(SYT::SymbolsTable::s_symbols.at(i).getToken().getImage() == token.getImage())
 		{
@@ -96,7 +95,7 @@ int SYT::SymbolsTable::getSymbolIndex(TK::Token token)
 
 int SYT::SymbolsTable::indexOf(std::vector<SY::Symbol> symbols, SY::Symbol symbol)
 {
-	for(std::vector<int>::size_type i = symbols.size() - 1; i != (std::vector<int>::size_type) -1; i--) 
+	for(std::vector<int>::size_type i = symbols.size() - 1; i != (std::vector<int>::size_type) -1; i--)
 	{
 		if(symbols.at(i).getNick() == symbol.getNick())
 		{
@@ -126,7 +125,7 @@ std::string SYT::SymbolsTable::getConstantType(TK::Token token)
 void SYT::SymbolsTable::showSymbolsTable()
 {
 	std::cout << "Symbols List -> " << std::endl;
-    for(int i = 0; i < SYT::SymbolsTable::s_symbols.size(); i++) 
+  for(int i = 0; i < SYT::SymbolsTable::s_symbols.size(); i++)
 	{
 		 std::cout << "token: " << SYT::SymbolsTable::s_symbols.at(i).getToken().getImage() << " - type: " << SYT::SymbolsTable::s_symbols.at(i).getType() << std::endl;
 	}
@@ -135,7 +134,7 @@ void SYT::SymbolsTable::showSymbolsTable()
 void SYT::SymbolsTable::showSymbolsTableSLC()
 {
 	std::cout << "SLC Symbols List ->" << std::endl;
-    for(std::vector<int>::size_type i = SYT::SymbolsTable::s_literalStrings.size() - 1; i != (std::vector<int>::size_type) -1; i--) 
+    for(std::vector<int>::size_type i = SYT::SymbolsTable::s_literalStrings.size() - 1; i != (std::vector<int>::size_type) -1; i--)
 	{
 		 std::cout << "token: " << SYT::SymbolsTable::s_literalStrings.at(i).getToken().getImage() << " - type: " << SYT::SymbolsTable::s_literalStrings.at(i).getType() << std::endl;
 	}

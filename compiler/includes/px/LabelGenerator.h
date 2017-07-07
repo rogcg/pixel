@@ -8,8 +8,8 @@ namespace LG
 	class LabelGenerator
 	{
 		public:
-			int i;
-			int n;
+			int i= 0;
+			int n = 0;
 
 			std::string getNextLabel();
 			std::string getNextTemp();

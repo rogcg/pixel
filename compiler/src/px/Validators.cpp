@@ -46,6 +46,6 @@ bool VLD::Validators::isInt(std::string image)
 {
 	if(boost::regex_match(image, boost::regex("[0-9]+")))
 		return true;
-	else 
+	else
 		return false;
 }

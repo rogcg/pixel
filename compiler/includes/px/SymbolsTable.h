@@ -14,10 +14,10 @@ namespace SYT
 		public:
 			static std::vector<SY::Symbol> s_symbols;
 			static std::vector<SY::Symbol> s_literalStrings;
-			void addToken(TK::Token);
+			void addToken(TK::Token, std::string type);
 			int getSymbolIndex(TK::Token);
 			int indexOf(std::vector<SY::Symbol>, SY::Symbol);
-			void addLiteralStringToken(TK::Token);
+			void addLiteralStringToken(TK::Token, std::string type);
 			void setTokenType(TK::Token, std::string);
 			std::string getTokenType(TK::Token);
 			std::string getTokenImage(TK::Token);
