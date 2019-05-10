@@ -3,8 +3,6 @@ pixel language
 
 pixel is a python/list like programming language under development.
 
-[pixel lang community](https://plus.google.com/+PixelLanguage)
-
 running the compiler
 =====
 
